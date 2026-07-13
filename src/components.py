@@ -20,7 +20,7 @@ from __future__ import annotations
 
 import pandas as pd
 import streamlit as st
-
+from src.report import add_comment
 from src.styles import COLORS
 
 def section_title(
@@ -3045,3 +3045,52 @@ def player_evolution_chart(
         use_container_width=True
 
     )
+
+# =============================================================================
+# CAJA DE COMENTARIOS
+# =============================================================================
+
+def comments_box(page: str):
+    """
+    Caja de comentarios para el informe diario.
+    """
+
+    st.divider()
+
+    st.subheader("📝 Observaciones")
+
+    comment = st.text_area(
+
+        "Escribe una observación para el informe diario",
+
+        height=140,
+
+        key=f"comment_{page}"
+
+    )
+
+    col1, col2 = st.columns([1,4])
+
+    with col1:
+
+        if st.button(
+
+            "Guardar",
+
+            key=f"save_comment_{page}",
+
+            use_container_width=True
+
+        ):
+
+            add_comment(
+
+                page,
+
+                comment
+
+            )
+
+            st.success("Comentario guardado correctamente.")
+
+            st.rerun()

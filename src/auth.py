@@ -16,6 +16,9 @@ Preparado para múltiples clubes y usuarios.
 
 from __future__ import annotations
 
+from src.report import generate_pdf
+from src.report import clear_report
+
 import streamlit as st
 
 
@@ -117,11 +120,7 @@ def logout():
 # COMPROBAR AUTENTICACIÓN
 # =============================================================================
 
-def check_authentication() -> None:
-    """
-    Impide acceder a cualquier página si no existe
-    una sesión válida.
-    """
+def check_authentication():
 
     if (
         not st.session_state.get("authenticated", False)
@@ -133,6 +132,8 @@ def check_authentication() -> None:
         st.switch_page("Home.py")
 
         st.stop()
+
+    sidebar_report()
 
 
 # =============================================================================
@@ -189,3 +190,41 @@ def is_admin() -> bool:
     """
 
     return has_role("Administrador")
+
+def sidebar_report():
+
+    with st.sidebar:
+
+        st.markdown("---")
+
+        st.subheader("📄 Informe diario")
+
+        pdf = generate_pdf()
+
+        st.download_button(
+
+            label="📥 Descargar informe",
+
+            data=pdf,
+
+            file_name="Informe_Agora360.pdf",
+
+            mime="application/pdf",
+
+            use_container_width=True
+
+        )
+
+        if st.button(
+
+            "🗑 Nuevo informe",
+
+            use_container_width=True
+
+        ):
+
+            clear_report()
+
+            st.success("Nuevo informe creado.")
+
+            st.rerun()
