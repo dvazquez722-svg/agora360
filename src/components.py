@@ -1053,7 +1053,7 @@ def player_row(player: dict):
             use_container_width=True
         ):
             st.session_state["selected_player"] = player["player"]
-            st.switch_page("pages/4_Perfil Individual.py")
+            st.switch_page("pages/4_Perfil_Individual.py")
 
     st.markdown(
         "</div>",
