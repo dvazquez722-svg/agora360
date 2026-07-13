@@ -18,6 +18,8 @@ from src.auth import check_authentication
 
 check_authentication()
 
+from src.components import player_evolution_chart
+
 from src.components import (
     page_header,
     player_header,
@@ -95,3 +97,8 @@ st.write("")
 player_kpis(summary)
 
 st.divider()
+
+player_evolution_chart(
+    df,
+    player_name
+)

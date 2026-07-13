@@ -2854,3 +2854,194 @@ def coach_decision_card(player):
         st.markdown("### 🎯 Recomendación")
 
         st.success(recommendation)
+
+
+import plotly.graph_objects as go
+
+
+def player_evolution_chart(
+    df,
+    player_name
+):
+    """
+    Evolución temporal del jugador frente a la media del equipo.
+    """
+
+    st.subheader("📈 Evolución temporal")
+
+    # ==========================================
+    # MÉTRICAS DISPONIBLES
+    # ==========================================
+
+    metrics = [
+
+        c
+
+        for c in df.select_dtypes(include="number").columns
+
+        if c not in [
+
+            "season",
+            "week"
+
+        ]
+
+    ]
+
+    metric = st.selectbox(
+
+        "Métrica",
+
+        metrics
+
+    )
+
+    # ==========================================
+    # FECHAS
+    # ==========================================
+
+    min_date = df["date"].min()
+
+    max_date = df["date"].max()
+
+    start_date, end_date = st.date_input(
+
+        "Rango de fechas",
+
+        value=(
+
+            min_date,
+
+            max_date
+
+        )
+
+    )
+
+    # ==========================================
+    # FILTRO
+    # ==========================================
+
+    data = df[
+
+        (df["date"] >= pd.to_datetime(start_date))
+
+        &
+
+        (df["date"] <= pd.to_datetime(end_date))
+
+    ]
+
+    # ==========================================
+    # SERIES
+    # ==========================================
+
+    player = (
+
+        data[data["player"] == player_name]
+
+        .groupby("date")[metric]
+
+        .mean()
+
+        .reset_index()
+
+    )
+
+    team = (
+
+        data
+
+        .groupby("date")[metric]
+
+        .mean()
+
+        .reset_index()
+
+    )
+
+    # ==========================================
+    # FIGURA
+    # ==========================================
+
+    fig = go.Figure()
+
+    fig.add_trace(
+
+        go.Scatter(
+
+            x=team["date"],
+
+            y=team[metric],
+
+            mode="lines",
+
+            name="Media equipo",
+
+            line=dict(
+
+                width=3,
+
+                dash="dot"
+
+            )
+
+        )
+
+    )
+
+    fig.add_trace(
+
+        go.Scatter(
+
+            x=player["date"],
+
+            y=player[metric],
+
+            mode="lines+markers",
+
+            name=player_name,
+
+            line=dict(
+
+                width=4
+
+            )
+
+        )
+
+    )
+
+    fig.update_layout(
+
+        height=450,
+
+        hovermode="x unified",
+
+        xaxis_title="",
+
+        yaxis_title=metric,
+
+        legend_title="",
+
+        margin=dict(
+
+            l=20,
+
+            r=20,
+
+            t=40,
+
+            b=20
+
+        )
+
+    )
+
+    st.plotly_chart(
+
+        fig,
+
+        use_container_width=True
+
+    )
