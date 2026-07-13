@@ -1,0 +1,13 @@
+[
+    {
+        "username":"admin",
+
+        "password":"agora360",
+
+        "club":"ud_las_palmas",
+
+        "role":"Administrador",
+
+        "active":true
+    }
+]

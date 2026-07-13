@@ -3,9 +3,114 @@ auth.py
 =======
 
 Sistema de autenticación de Ágora 360.
+
+Responsabilidades
+-----------------
+- Inicio de sesión
+- Cierre de sesión
+- Comprobación de autenticación
+- Gestión del usuario activo
+
+Preparado para múltiples clubes y usuarios.
 """
 
+from __future__ import annotations
+
 import streamlit as st
+
+
+# =============================================================================
+# USUARIOS (TEMPORAL)
+# =============================================================================
+
+USERS = {
+
+    "admin": {
+
+        "password": "agora360",
+
+        "name": "Administrador",
+
+        "club": "ud_las_palmas",
+
+        "role": "Administrador",
+
+        "active": True
+
+    }
+
+}
+
+
+# =============================================================================
+# OBTENER USUARIO
+# =============================================================================
+
+def get_user(username: str) -> dict | None:
+    """
+    Devuelve la información del usuario.
+
+    En el futuro esta función leerá una base de datos.
+    """
+
+    return USERS.get(username)
+
+
+# =============================================================================
+# LOGIN
+# =============================================================================
+
+def login(
+    username: str,
+    password: str
+) -> bool:
+    """
+    Valida las credenciales del usuario.
+    """
+
+    user = get_user(username)
+
+    if user is None:
+
+        return False
+
+    if not user["active"]:
+
+        return False
+
+    if password != user["password"]:
+
+        return False
+
+    st.session_state.authenticated = True
+
+    st.session_state.user = {
+
+        "username": username,
+
+        "name": user["name"],
+
+        "club": user["club"],
+
+        "role": user["role"]
+
+    }
+
+    return True
+
+
+# =============================================================================
+# LOGOUT
+# =============================================================================
+
+def logout():
+    """
+    Cierra la sesión actual.
+    """
+
+    st.session_state.clear()
+
+    st.switch_page("Home.py")
 
 
 # =============================================================================
@@ -14,11 +119,16 @@ import streamlit as st
 
 def check_authentication() -> None:
     """
-    Impide acceder a cualquier página si el usuario
-    no ha iniciado sesión.
+    Impide acceder a cualquier página si no existe
+    una sesión válida.
     """
 
-    if not st.session_state.get("authenticated", False):
+    if (
+        not st.session_state.get("authenticated", False)
+        or "user" not in st.session_state
+    ):
+
+        st.session_state.clear()
 
         st.switch_page("Home.py")
 
@@ -26,38 +136,56 @@ def check_authentication() -> None:
 
 
 # =============================================================================
-# INICIAR SESIÓN
+# INFORMACIÓN DEL USUARIO
 # =============================================================================
 
-def login(username: str, password: str) -> bool:
+def current_user() -> dict:
     """
-    Valida las credenciales del usuario.
+    Devuelve el usuario autenticado.
     """
 
-    # Temporal
-    if username == "admin" and password == "agora360":
+    return st.session_state.get("user", {})
 
-        st.session_state.authenticated = True
 
-        st.session_state.user = {
+def current_club() -> str:
+    """
+    Devuelve el club activo.
+    """
 
-            "username": username,
+    return current_user().get("club", "")
 
-            "role": "Administrador"
 
-        }
+def current_role() -> str:
+    """
+    Devuelve el rol del usuario.
+    """
 
-        return True
+    return current_user().get("role", "")
 
-    return False
+
+def current_username() -> str:
+    """
+    Devuelve el nombre de usuario.
+    """
+
+    return current_user().get("username", "")
 
 
 # =============================================================================
-# CERRAR SESIÓN
+# PERMISOS
 # =============================================================================
 
-def logout() -> None:
+def has_role(role: str) -> bool:
+    """
+    Comprueba si el usuario tiene un rol.
+    """
 
-    st.session_state.clear()
+    return current_role() == role
 
-    st.switch_page("Home.py")
+
+def is_admin() -> bool:
+    """
+    Comprueba si el usuario es administrador.
+    """
+
+    return has_role("Administrador")

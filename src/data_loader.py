@@ -20,13 +20,23 @@ import streamlit as st
 
 
 # =============================================================================
-# RUTAS
+# CLUB ACTIVO
 # =============================================================================
 
-DATA_DIR = Path("data") / "processed"
+def get_club_path() -> Path:
+    """
+    Devuelve la carpeta de datos del club activo.
+    """
 
-CLEAN_DATA = DATA_DIR / "dataset_clean.csv"
-SESSION_DATA = DATA_DIR / "dataset_sessions.csv"
+    if "user" not in st.session_state:
+
+        raise RuntimeError(
+            "No existe un usuario autenticado."
+        )
+
+    club = st.session_state["user"]["club"]
+
+    return Path("data") / "clubs" / club
 
 
 # =============================================================================
@@ -35,34 +45,44 @@ SESSION_DATA = DATA_DIR / "dataset_sessions.csv"
 
 def _read_csv(path: Path) -> pd.DataFrame:
     """
-    Lee un archivo CSV comprobando previamente su existencia.
+    Lee un CSV comprobando previamente su existencia.
     """
 
     if not path.exists():
-        raise FileNotFoundError(f"No se encontró el archivo: {path}")
+
+        raise FileNotFoundError(
+            f"No se encontró el archivo:\n{path}"
+        )
 
     return pd.read_csv(path)
 
 
-def _prepare_clean_dataset(df: pd.DataFrame) -> pd.DataFrame:
+def _prepare_clean_dataset(
+    df: pd.DataFrame
+) -> pd.DataFrame:
     """
     Limpieza básica del dataset principal.
     """
 
     df = df.copy()
 
-    # Eliminar espacios en nombres de columnas
     df.columns = df.columns.str.strip()
 
-    # Convertir columnas de fecha
     for col in df.columns:
+
         if "date" in col.lower() or "fecha" in col.lower():
-            df[col] = pd.to_datetime(df[col], errors="coerce")
+
+            df[col] = pd.to_datetime(
+                df[col],
+                errors="coerce"
+            )
 
     return df
 
 
-def _prepare_session_dataset(df: pd.DataFrame) -> pd.DataFrame:
+def _prepare_session_dataset(
+    df: pd.DataFrame
+) -> pd.DataFrame:
     """
     Limpieza básica del dataset de sesiones.
     """
@@ -72,14 +92,19 @@ def _prepare_session_dataset(df: pd.DataFrame) -> pd.DataFrame:
     df.columns = df.columns.str.strip()
 
     for col in df.columns:
+
         if "date" in col.lower() or "fecha" in col.lower():
-            df[col] = pd.to_datetime(df[col], errors="coerce")
+
+            df[col] = pd.to_datetime(
+                df[col],
+                errors="coerce"
+            )
 
     return df
 
 
 # =============================================================================
-# CARGA DE DATOS
+# CARGA DATASET PRINCIPAL
 # =============================================================================
 
 @st.cache_data(show_spinner=False)
@@ -88,10 +113,18 @@ def load_clean_data() -> pd.DataFrame:
     Carga el dataset principal.
     """
 
-    df = _read_csv(CLEAN_DATA)
+    data_dir = get_club_path() / "processed"
+
+    clean_data = data_dir / "dataset_clean.csv"
+
+    df = _read_csv(clean_data)
 
     return _prepare_clean_dataset(df)
 
+
+# =============================================================================
+# CARGA DATASET SESIONES
+# =============================================================================
 
 @st.cache_data(show_spinner=False)
 def load_session_data() -> pd.DataFrame:
@@ -99,7 +132,11 @@ def load_session_data() -> pd.DataFrame:
     Carga el dataset de sesiones.
     """
 
-    df = _read_csv(SESSION_DATA)
+    data_dir = get_club_path() / "processed"
+
+    session_data = data_dir / "dataset_sessions.csv"
+
+    df = _read_csv(session_data)
 
     return _prepare_session_dataset(df)
 
@@ -111,12 +148,15 @@ def load_session_data() -> pd.DataFrame:
 @st.cache_data(show_spinner=False)
 def load_data() -> dict:
     """
-    Devuelve todos los datasets de la aplicación.
+    Devuelve todos los datasets del club activo.
     """
 
     return {
+
         "clean": load_clean_data(),
-        "sessions": load_session_data(),
+
+        "sessions": load_session_data()
+
     }
 
 
@@ -132,8 +172,13 @@ def dataset_info() -> dict:
     data = load_data()
 
     return {
+
         "clean_rows": len(data["clean"]),
+
         "clean_columns": len(data["clean"].columns),
+
         "session_rows": len(data["sessions"]),
-        "session_columns": len(data["sessions"].columns),
+
+        "session_columns": len(data["sessions"].columns)
+
     }

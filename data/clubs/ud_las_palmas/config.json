@@ -1,0 +1,14 @@
+{
+    "id": 1,
+    "name": "UD Las Palmas",
+    "folder": "ud_las_palmas",
+
+    "competition": "Segunda División",
+
+    "season": "2022-2023",
+
+    "primary_color": "#FFD100",
+    "secondary_color": "#005BAC",
+
+    "logo": "logo.png"
+}

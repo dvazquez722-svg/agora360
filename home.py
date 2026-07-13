@@ -119,7 +119,7 @@ with right:
 
     )
 
-    login = st.button(
+    login_button = st.button(
 
         "Acceder",
 
@@ -127,15 +127,11 @@ with right:
 
     )
 
-    if login:
+    if login_button:
 
-        if username == "admin" and password == "agora360":
+        if login(username, password):
 
-            st.session_state.authenticated = True
-
-            st.success("Acceso correcto.")
-
-            st.rerun()
+            st.switch_page("pages/1_Estado General.py")
 
         else:
 
