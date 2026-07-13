@@ -18,13 +18,6 @@ No contiene lógica deportiva.
 
 from __future__ import annotations
 
-from st_aggrid import (
-    AgGrid,
-    GridOptionsBuilder,
-    GridUpdateMode,
-    JsCode
-)
-
 import pandas as pd
 import streamlit as st
 
