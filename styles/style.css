@@ -1,0 +1,191 @@
+/* ==========================================================
+   PERFORMANCE MONITOR
+   GLOBAL STYLE
+========================================================== */
+
+/* ---------- Fuente ---------- */
+
+html,
+body,
+[class*="css"] {
+    font-family: "Inter", sans-serif;
+}
+
+/* ---------- Fondo principal ---------- */
+
+.stApp {
+    background-color: #111827;
+}
+
+/* ---------- Contenedor principal ---------- */
+
+.main .block-container {
+
+    max-width: 1600px;
+
+    padding-top: 2rem;
+
+    padding-bottom: 3rem;
+
+    padding-left: 2rem;
+
+    padding-right: 2rem;
+}
+
+/* ---------- Sidebar ---------- */
+
+section[data-testid="stSidebar"] {
+
+    background-color: #0F172A;
+
+    border-right: 1px solid #374151;
+
+}
+
+section[data-testid="stSidebar"] * {
+
+    color: white;
+
+}
+
+/* ---------- Títulos ---------- */
+
+h1 {
+
+    color: white;
+
+    font-weight: 700;
+
+}
+
+h2 {
+
+    color: white;
+
+    font-weight: 700;
+
+}
+
+h3 {
+
+    color: white;
+
+    font-weight: 600;
+
+}
+
+p {
+
+    color: #D1D5DB;
+
+}
+
+/* ---------- Separadores ---------- */
+
+hr {
+
+    border-color: #374151;
+
+}
+
+/* ---------- DataFrame ---------- */
+
+[data-testid="stDataFrame"] {
+
+    border-radius: 18px;
+
+    overflow: hidden;
+
+    border: 1px solid #374151;
+
+}
+
+/* ---------- Plotly ---------- */
+
+.js-plotly-plot {
+
+    border-radius: 18px;
+
+}
+
+/* ---------- SelectBox ---------- */
+
+[data-baseweb="select"] {
+
+    border-radius: 12px;
+
+}
+
+/* ---------- Date Input ---------- */
+
+[data-testid="stDateInput"] {
+
+    border-radius: 12px;
+
+}
+
+/* ---------- Botones ---------- */
+
+.stButton>button {
+
+    background-color: #3B82F6;
+
+    color: white;
+
+    border-radius: 12px;
+
+    border: none;
+
+    font-weight: 600;
+
+    transition: .2s;
+
+}
+
+.stButton>button:hover {
+
+    background-color: #2563EB;
+
+}
+
+/* ---------- Tabs ---------- */
+
+button[data-baseweb="tab"] {
+
+    color: white;
+
+}
+
+button[data-baseweb="tab"][aria-selected="true"] {
+
+    color: #3B82F6;
+
+}
+
+/* ---------- Scroll ---------- */
+
+::-webkit-scrollbar {
+
+    width: 10px;
+
+}
+
+::-webkit-scrollbar-track {
+
+    background: #111827;
+
+}
+
+::-webkit-scrollbar-thumb {
+
+    background: #374151;
+
+    border-radius: 20px;
+
+}
+
+::-webkit-scrollbar-thumb:hover {
+
+    background: #4B5563;
+
+}
